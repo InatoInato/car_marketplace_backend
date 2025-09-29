@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: car_marketplace
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/car_marketplace
