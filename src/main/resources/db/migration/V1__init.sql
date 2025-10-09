@@ -1,0 +1,10 @@
+CREATE TABLE cars (
+    id BIGSERIAL PRIMARY KEY,
+    make VARCHAR(100) NOT NULL,
+    model VARCHAR(100) NOT NULL,
+    year INT NOT NULL,
+    color VARCHAR(50) NOT NULL,
+    engine_capacity DOUBLE PRECISION NOT NULL,
+    price DOUBLE PRECISION NOT NULL,
+    description TEXT NOT NULL
+);
