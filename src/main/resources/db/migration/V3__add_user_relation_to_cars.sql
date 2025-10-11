@@ -1,0 +1,5 @@
+ALTER TABLE cars
+ADD COLUMN user_id BIGINT NOT NULL,
+ADD CONSTRAINT fk_cars_user FOREIGN KEY (user_id)
+REFERENCES users (user_id)
+ON DELETE CASCADE;

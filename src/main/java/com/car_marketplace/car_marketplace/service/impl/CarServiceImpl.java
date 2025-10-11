@@ -1,7 +1,7 @@
 package com.car_marketplace.car_marketplace.service.impl;
 
 import com.car_marketplace.car_marketplace.dto.CarDto;
-import com.car_marketplace.car_marketplace.dto.CarMapper;
+import com.car_marketplace.car_marketplace.dto.mapper.CarMapper;
 import com.car_marketplace.car_marketplace.dto.CreateCarDto;
 import com.car_marketplace.car_marketplace.entity.Car;
 import com.car_marketplace.car_marketplace.exception.CarNotFoundException;
