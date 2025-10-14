@@ -9,7 +9,7 @@ import java.util.List;
 public class CarMapper {
 
     public static CarDto toDto(Car car) {
-        List<CarImageDto> imageDto = car.getImages() != null
+        List<CarImageDto> imageDtos = car.getImages() != null
                 ? car.getImages().stream()
                 .map(img -> new CarImageDto(img.getId(), img.getImageUrl()))
                 .toList()
@@ -24,7 +24,7 @@ public class CarMapper {
                 car.getEngineCapacity(),
                 car.getPrice(),
                 car.getDescription(),
-                imageDto
+                imageDtos
         );
     }
 

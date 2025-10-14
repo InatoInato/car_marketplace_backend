@@ -13,6 +13,8 @@ import com.car_marketplace.car_marketplace.repository.CarRepository;
 import com.car_marketplace.car_marketplace.repository.UserRepository;
 import com.car_marketplace.car_marketplace.service.CarService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +26,7 @@ public class CarServiceImpl implements CarService {
     private final UserRepository userRepository;
     private final CarImagesRepository carImagesRepository;
 
+    @CacheEvict(value = "cars", allEntries = true)
     @Override
     public CarDto createCar(CreateCarDto carDto) {
         User user = userRepository.findById(carDto.userId())
@@ -65,6 +68,7 @@ public class CarServiceImpl implements CarService {
         return CarMapper.toDto(car);
     }
 
+    @Cacheable(value = "car", key = "#id")
     @Override
     public CarDto getCarById(Long id) {
         return repository.findById(id)
@@ -79,6 +83,7 @@ public class CarServiceImpl implements CarService {
                 .toList();
     }
 
+    @CacheEvict(value = "cars", allEntries = true)
     @Override
     public CarDto updateCar(Long id, CarDto carDto) {
         Car car = repository.findById(id)
@@ -94,6 +99,7 @@ public class CarServiceImpl implements CarService {
         return CarMapper.toDto(updatedCar);
     }
 
+    @CacheEvict(value = "cars", key = "#id")
     @Override
     public CarDto updateCarPrice(Long id, CarDto carDto) {
         Car car = repository.findById(id)
