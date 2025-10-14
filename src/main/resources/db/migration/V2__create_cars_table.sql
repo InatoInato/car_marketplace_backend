@@ -6,5 +6,9 @@ CREATE TABLE cars (
     color VARCHAR(255) NOT NULL,
     engine_capacity DOUBLE PRECISION NOT NULL,
     price DOUBLE PRECISION NOT NULL,
-    description TEXT NOT NULL
+    description TEXT NOT NULL,
+    user_id BIGINT NOT NULL,
+    CONSTRAINT fk_cars_user FOREIGN KEY (user_id)
+        REFERENCES users (user_id)
+        ON DELETE CASCADE
 );

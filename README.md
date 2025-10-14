@@ -9,7 +9,6 @@ A full-stack web application for buying and selling cars.
 ## Features
 - List cars for sale
 - Search for cars by make, model, year, and price
-- View car details and images
 - Contact sellers directly through the platform
 - User authentication and profiles
 - Admin dashboard for managing listings and users

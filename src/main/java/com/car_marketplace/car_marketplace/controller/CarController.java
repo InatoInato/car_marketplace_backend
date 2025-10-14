@@ -24,6 +24,15 @@ public class CarController {
         return ResponseEntity.ok(createdCar);
     }
 
+    @PostMapping("/{id}/images")
+    public ResponseEntity<CarDto> addCarImages(
+            @PathVariable Long id,
+            @RequestBody List<String> imageUrls
+    ) {
+        CarDto updatedCar = carService.addCarImages(id, imageUrls);
+        return ResponseEntity.ok(updatedCar);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<CarDto>> getAllCars() {
         List<CarDto> cars = carService.getAllCars();

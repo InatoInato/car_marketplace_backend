@@ -1,11 +1,20 @@
 package com.car_marketplace.car_marketplace.dto.mapper;
 
-import com.car_marketplace.car_marketplace.dto.CarDto;
-import com.car_marketplace.car_marketplace.dto.CreateCarDto;
-import com.car_marketplace.car_marketplace.entity.Car;
+import com.car_marketplace.car_marketplace.dto.*;
+import com.car_marketplace.car_marketplace.entity.*;
+import org.springframework.stereotype.Component;
+import java.util.List;
 
+@Component
 public class CarMapper {
+
     public static CarDto toDto(Car car) {
+        List<CarImageDto> imageDto = car.getImages() != null
+                ? car.getImages().stream()
+                .map(img -> new CarImageDto(img.getId(), img.getImageUrl()))
+                .toList()
+                : List.of();
+
         return new CarDto(
                 car.getId(),
                 car.getMake(),
@@ -14,7 +23,8 @@ public class CarMapper {
                 car.getColor(),
                 car.getEngineCapacity(),
                 car.getPrice(),
-                car.getDescription()
+                car.getDescription(),
+                imageDto
         );
     }
 

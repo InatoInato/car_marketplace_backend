@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface CarService {
     CarDto createCar(CreateCarDto carDto);
+    CarDto addCarImages(Long id, List<String> imageUrls);
     CarDto getCarById(Long id);
     List<CarDto> getAllCars();
     CarDto updateCar(Long id, CarDto carDto);

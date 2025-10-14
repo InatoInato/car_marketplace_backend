@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
+import java.util.List;
+
 public record CarDto(
         Long id,
 
@@ -28,5 +30,7 @@ public record CarDto(
         double price,
 
         @NotBlank(message = "Description must not be empty")
-        String description
+        String description,
+
+        List<CarImageDto> images
 ) {}

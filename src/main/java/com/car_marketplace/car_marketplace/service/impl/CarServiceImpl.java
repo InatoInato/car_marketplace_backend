@@ -4,8 +4,13 @@ import com.car_marketplace.car_marketplace.dto.CarDto;
 import com.car_marketplace.car_marketplace.dto.mapper.CarMapper;
 import com.car_marketplace.car_marketplace.dto.CreateCarDto;
 import com.car_marketplace.car_marketplace.entity.Car;
+import com.car_marketplace.car_marketplace.entity.CarImage;
+import com.car_marketplace.car_marketplace.entity.User;
 import com.car_marketplace.car_marketplace.exception.CarNotFoundException;
+import com.car_marketplace.car_marketplace.exception.UserNotFoundException;
+import com.car_marketplace.car_marketplace.repository.CarImagesRepository;
 import com.car_marketplace.car_marketplace.repository.CarRepository;
+import com.car_marketplace.car_marketplace.repository.UserRepository;
 import com.car_marketplace.car_marketplace.service.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,12 +21,48 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
     private final CarRepository repository;
+    private final UserRepository userRepository;
+    private final CarImagesRepository carImagesRepository;
 
     @Override
     public CarDto createCar(CreateCarDto carDto) {
-        Car car = CarMapper.toEntity(carDto);
+        User user = userRepository.findById(carDto.userId())
+                .orElseThrow(() -> new UserNotFoundException(carDto.userId()));
+
+        Car car = Car.builder()
+                .make(carDto.make())
+                .model(carDto.model())
+                .year(carDto.year())
+                .color(carDto.color())
+                .engineCapacity(carDto.engineCapacity())
+                .price(carDto.price())
+                .description(carDto.description())
+                .user(user)
+                .build();
+
         Car savedCar = repository.save(car);
         return CarMapper.toDto(savedCar);
+    }
+
+    @Override
+    public CarDto addCarImages(Long id, List<String> imageUrls) {
+        Car car = repository.findById(id)
+                .orElseThrow(() -> new CarNotFoundException(id));
+
+        List<CarImage> images = imageUrls.stream()
+                .map(url -> {
+                    CarImage carImage = new CarImage();
+                    carImage.setImageUrl(url);
+                    carImage.setCar(car);
+                    return carImage;
+                })
+                .toList();
+
+        carImagesRepository.saveAll(images);
+        car.getImages().addAll(images);
+        repository.save(car);
+
+        return CarMapper.toDto(car);
     }
 
     @Override

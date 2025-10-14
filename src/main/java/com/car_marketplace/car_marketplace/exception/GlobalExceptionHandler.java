@@ -17,26 +17,14 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // 🔹 404 Not Found
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleUserNotFound(UserNotFoundException ex) {
         log.warn("User not found: {}", ex.getMessage());
         return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Map<String, Object>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        String expectedType = ex.getRequiredType() != null
-                ? ex.getRequiredType().getSimpleName()
-                : "unknown";
-
-        String message = "Invalid parameter: '" + ex.getName() +
-                "'. Expected type: " + expectedType;
-
-        log.warn("Type mismatch: {}", message, ex);
-
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, message);
-    }
-
+    // 🔹 Validation error @Valid
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> fieldErrors = new HashMap<>();
@@ -55,18 +43,42 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    // 🔹 Invalid parameter type (e.g., passing a string instead of a number)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, Object>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String expectedType = ex.getRequiredType() != null
+                ? ex.getRequiredType().getSimpleName()
+                : "unknown";
+
+        String message = "Invalid parameter: '" + ex.getName() +
+                "'. Expected type: " + expectedType;
+
+        log.warn("Type mismatch: {}", message);
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, message);
+    }
+
+    // 🔹 Incorrect arguments
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
         log.warn("Illegal argument: {}", ex.getMessage());
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex) {
-        log.error("Unexpected error occurred: ", ex);
-        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error: " + ex.getMessage());
+    // 🔹 Already exists
+    @ExceptionHandler(ResourceAlreadyExistException.class)
+    public ResponseEntity<Map<String, Object>> handleResourceAlreadyExist(ResourceAlreadyExistException ex) {
+        log.warn("Resource already exists: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    // 🔹 All other exceptions
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex) {
+        log.error("Unexpected error: ", ex);
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    // 🔧 Universal error response builder
     private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus status, String message) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
@@ -75,12 +87,4 @@ public class GlobalExceptionHandler {
         body.put("message", message);
         return ResponseEntity.status(status).body(body);
     }
-
-    @ExceptionHandler(ResourceAlreadyExistException.class)
-    public ResponseEntity<Map<String, Object>> handleResourceAlreadyExist(ResourceAlreadyExistException ex) {
-        log.warn("Resource already exists: {}", ex.getMessage());
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
-
-
 }

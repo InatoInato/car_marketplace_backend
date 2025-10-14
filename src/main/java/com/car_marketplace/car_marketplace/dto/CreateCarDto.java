@@ -27,5 +27,7 @@ public record CreateCarDto(
         double price,
 
         @NotBlank(message = "Description must not be empty")
-        String description
+        String description,
+
+        Long userId
 ) {}
